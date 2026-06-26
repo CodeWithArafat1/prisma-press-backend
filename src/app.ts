@@ -1,0 +1,20 @@
+import express from "express";
+import cors from "cors";
+import config from "./config";
+import { userRouter } from "./modules/user/user.routes";
+
+
+const app = express();
+app.use(
+  cors({
+    origin: config.app_url, // Allow requests from the specified app URL
+    credentials: true,
+  }),
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// create a new user
+app.use("/api/users", userRouter);
+
+export default app;
