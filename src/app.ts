@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import config from "./config";
 import { userRouter } from "./modules/user/user.routes";
+import { authRoutes } from "./modules/auth/auth.routes";
 
 
 const app = express();
@@ -16,5 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // create a new user
 app.use("/api/users", userRouter);
+app.use('/api/auth', authRoutes)
 
 export default app;
