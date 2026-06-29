@@ -1,11 +1,22 @@
 // users enums
 enum ActiveStatus {
-    ACTIVE
-    INACTIVE
+  ACTIVE
+  INACTIVE
 }
 
 enum Role {
-    USER
-    ADMIN
-    AUTHOR
+  USER
+  ADMIN
+  AUTHOR
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLIC
+  ARCHIVE
+}
+
+enum CommentStatus {
+  APPROVED
+  REJECT
 }
