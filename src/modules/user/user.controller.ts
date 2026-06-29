@@ -4,6 +4,7 @@ import {
   createUserIntoDB,
   getAllUsersFromDB,
   getMyProfileIntoDB,
+  updateMyProfileIntoDB,
 } from "./user.services";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
@@ -44,7 +45,6 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 // get my profile
 export const getMyProfile = catchAsync(async (req: Request, res: Response) => {
-
   const userProfile = await getMyProfileIntoDB(req.user?.id as string);
   sendResponse(res, {
     success: true,
@@ -53,3 +53,16 @@ export const getMyProfile = catchAsync(async (req: Request, res: Response) => {
     data: userProfile,
   });
 });
+
+export const updateMyProfile = catchAsync(
+  async (req: Request, res: Response) => {
+ 
+    const userProfile = await updateMyProfileIntoDB(req.user?.id as string, req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: status.OK,
+      message: "User updated successfully",
+      data: userProfile,
+    });
+  },
+);

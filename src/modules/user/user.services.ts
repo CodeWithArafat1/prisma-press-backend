@@ -34,14 +34,6 @@ export const createUserIntoDB = async (payload: UserPayload) => {
     },
   });
 
-  // create profile
-  //   await prisma.profile.create({
-  //     data: {
-  //       profilePhoto,
-  //       userId: createUser.id,
-  //     },
-  //   });
-
   const user = await prisma.user.findUnique({
     where: {
       id: createUser.id,
@@ -69,7 +61,6 @@ export const getAllUsersFromDB = async () => {
 };
 
 // getMyProfile
-
 export const getMyProfileIntoDB = async (userId: string) => {
   try {
     const user = await prisma.user.findFirstOrThrow({
@@ -78,10 +69,42 @@ export const getMyProfileIntoDB = async (userId: string) => {
         password: true,
       },
       include: {
-        profile: true
-      }
+        profile: true,
+      },
     });
-    return user
+    return user;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+export const updateMyProfileIntoDB = async (userId: string, payload: any) => {
+  try {
+    const { name, email,  profilePhoto, bio } = payload;
+
+    const updateUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name,
+        email,
+        profile: {
+          update: {
+            profilePhoto,
+            bio,
+          },
+        },
+      },
+      omit: {
+        password: true,
+      },
+      include: {
+        profile: true,
+      },
+    });
+
+    return updateUser;
   } catch (error: any) {
     throw new Error(error.message);
   }

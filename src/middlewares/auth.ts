@@ -5,8 +5,6 @@ import { jwtUtils } from "../utils/jwt";
 import config from "../config";
 import { prisma } from "../lib/prisma";
 
-
-
 export const auth = (...requiredRoles: Role[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.accessToken
@@ -64,5 +62,3 @@ export const auth = (...requiredRoles: Role[]) => {
     next();
   });
 };
-
-
