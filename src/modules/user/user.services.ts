@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import config from "../../config";
 import { UserPayload } from "./user.interface";
+import { jwtUtils } from "../../utils/jwt";
+import { SignOptions } from "jsonwebtoken";
 
 // create a new user into db
 export const createUserIntoDB = async (payload: UserPayload) => {
@@ -80,7 +82,7 @@ export const getMyProfileIntoDB = async (userId: string) => {
 
 export const updateMyProfileIntoDB = async (userId: string, payload: any) => {
   try {
-    const { name, email,  profilePhoto, bio } = payload;
+    const { name, email, profilePhoto, bio } = payload;
 
     const updateUser = await prisma.user.update({
       where: {

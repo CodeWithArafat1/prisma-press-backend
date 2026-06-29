@@ -8,8 +8,8 @@ import {
 } from "./user.services";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import jwt from "jsonwebtoken";
-import config from "../../config";
+import { genRefreshToken } from "../auth/auth.services";
+
 
 export const createUsers = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
@@ -56,8 +56,10 @@ export const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 
 export const updateMyProfile = catchAsync(
   async (req: Request, res: Response) => {
- 
-    const userProfile = await updateMyProfileIntoDB(req.user?.id as string, req.body);
+    const userProfile = await updateMyProfileIntoDB(
+      req.user?.id as string,
+      req.body,
+    );
     sendResponse(res, {
       success: true,
       statusCode: status.OK,
