@@ -1,4 +1,5 @@
 import { Response } from "express";
+import status from "http-status";
 
 type TMeta = {
   page: number;
@@ -17,6 +18,7 @@ type TResponseData<T> = {
 export const sendResponse = <T>(res: Response, data: TResponseData<T>) => {
   res.status(data.statusCode).json({
     success: data.success,
+    status: status.OK,
     message: data.message,
     data: data.data,
     meta: data.meta,

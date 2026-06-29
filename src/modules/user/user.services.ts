@@ -18,7 +18,7 @@ export const createUserIntoDB = async (payload: UserPayload) => {
 
   const hashPassword = await bcrypt.hash(
     password,
-    Number(config.bycript_salt_rounds),
+    Number(config.bcrypt_salt_rounds),
   );
 
   const createUser = await prisma.user.create({
@@ -66,4 +66,23 @@ export const getAllUsersFromDB = async () => {
     },
   });
   return users;
+};
+
+// getMyProfile
+
+export const getMyProfileIntoDB = async (userId: string) => {
+  try {
+    const user = await prisma.user.findFirstOrThrow({
+      where: { id: userId },
+      omit: {
+        password: true,
+      },
+      include: {
+        profile: true
+      }
+    });
+    return user
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };
