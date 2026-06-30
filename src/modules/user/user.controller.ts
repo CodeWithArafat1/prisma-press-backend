@@ -49,11 +49,12 @@ export const getMyProfile = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: status.OK,
-    message: "Users retrieved successfully",
+    message: "Profile retrieved successfully",
     data: userProfile,
   });
 });
 
+// update profile
 export const updateMyProfile = catchAsync(
   async (req: Request, res: Response) => {
     const userProfile = await updateMyProfileIntoDB(

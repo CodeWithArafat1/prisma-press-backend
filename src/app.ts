@@ -4,6 +4,8 @@ import config from "./config";
 import { userRouter } from "./modules/user/user.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 import cookieParser from "cookie-parser";
+import { postRoutes } from "./modules/post/post.routes";
+import { commentRoutes } from "./modules/comment/comment.routes";
 
 
 const app = express();
@@ -20,5 +22,7 @@ app.use(cookieParser())
 // create a new user
 app.use("/api/users", userRouter);
 app.use('/api/auth', authRoutes)
+app.use('/api/posts', postRoutes)
+app.use('/api/comments', commentRoutes)
 
 export default app;
