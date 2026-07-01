@@ -3,7 +3,7 @@ import {
   createPost,
   deletePostById,
   getAllPosts,
-  getMyPos,
+  getMyPost,
   getPostById,
   getPostStats,
   updatePostById,
@@ -17,14 +17,14 @@ router.post("/", auth(Role.ADMIN, Role.USER, Role.AUTHOR), createPost);
 
 router.get("/", getAllPosts);
 
-router.get("/stats", auth(Role.ADMIN), getPostStats);
+router.get("/my-posts", auth(Role.ADMIN, Role.USER, Role.AUTHOR), getMyPost);
 
-router.get("/my-posts", auth(Role.ADMIN, Role.USER, Role.AUTHOR), getMyPos);
+router.get("/stats", auth(Role.ADMIN), getPostStats);
 
 router.get('/:postId', getPostById)
 
-router.patch('/:postId', updatePostById)
+router.patch('/my-post/:postId',auth(Role.ADMIN, Role.USER, Role.AUTHOR), updatePostById)
 
-router.delete('/:postId', deletePostById)
+router.delete('/my-post/:postId',auth(Role.ADMIN, Role.USER, Role.AUTHOR), deletePostById)
 
 export const postRoutes = router;

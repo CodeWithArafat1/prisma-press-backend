@@ -1,24 +1,126 @@
+import { Role } from "../../generated/prisma/enums";
+import { prisma } from "../../lib/prisma";
+import { IPostInterface, UPost } from "./post.interface";
+
 // create post
-export const createPostIntoDB = ()=>{}
+export const createPostIntoDB = async (
+  payload: IPostInterface,
+  authorId: string,
+) => {
+  const {
+    title,
+    description,
+    tags: [...tags],
+  } = payload;
+  const post = await prisma.post.create({
+    data: {
+      title,
+      description,
+      tags,
+      authorId,
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          activeStatus: true,
+          createdAt: true,
+          updateAt: true,
+        },
+      },
+    },
+  });
+  return post;
+};
 
 // get all post
-export const getAllPostIntoDB = ()=>{}
+export const getAllPostIntoDB = async () => {
+  const posts = await prisma.post.findMany();
+  return posts;
+};
 
 // get my post
-export const getMyPostIntoDB = ()=>{}
+export const getMyPostIntoDB = async (authorId: string) => {
+  const myPosts = await prisma.post.findMany({
+    where: {
+      authorId,
+    },
+  });
 
-
-// status only admin
-export const getPostStatsIntoDB = ()=>{}
-
+  return myPosts;
+};
 
 // get post by id
-export const getPostByIdIntoDB = () => {};
+export const getPostByIdIntoDB = async (postId: string) => {
 
+  const singlePost = await prisma.post.findUnique({
+    where: {
+      id: postId,
+    },
+  });
+
+  if(!singlePost){
+    throw new Error("Post Not Found!")
+  }
+
+  return singlePost;
+};
+
+// status only admin
+export const getPostStatsIntoDB = async () => {};
 
 // update post by id
-export const updatePostByIdIntoDB = () => {};
+export const updatePostByIdIntoDB = async (
+  payload: UPost,
+  postId: string,
+  authorId: string,
+  role: Role,
+) => {
+  const { title, description, thumbnail } = payload;
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+  });
 
+  if (authorId !== post.authorId && role !== Role.ADMIN) {
+    throw new Error("Forbidden: You can't update this post!");
+  }
+
+  const updatedPost = await prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data: { title, description, thumbnail },
+  });
+
+  return updatedPost;
+};
 
 // delete post by id
-export const deletePostByIdIntoDB = () => {};
+export const deletePostByIdIntoDB = async (
+  postId: string,
+  authorId: string,
+  role: string,
+) => {
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+  });
+
+  if (authorId !== post.authorId && role !== Role.ADMIN) {
+    throw new Error("Forbidden: You can't delete this post!");
+  }
+
+  const deletePost = await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+
+  return deletePost;
+};
