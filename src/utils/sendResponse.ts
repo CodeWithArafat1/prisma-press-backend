@@ -5,6 +5,7 @@ type TMeta = {
   page: number;
   limit: number;
   total: number;
+  totalPage: number
 };
 
 type TResponseData<T> = {
@@ -12,6 +13,7 @@ type TResponseData<T> = {
   statusCode: number;
   message: string;
   data: T;
+  total?: number,
   meta?: TMeta;
 };
 
@@ -20,6 +22,7 @@ export const sendResponse = <T>(res: Response, data: TResponseData<T>) => {
     success: data.success,
     status: status.OK,
     message: data.message,
+    total: data.total,
     data: data.data,
     meta: data.meta,
   });

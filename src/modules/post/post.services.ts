@@ -21,14 +21,8 @@ export const createPostIntoDB = async (
     },
     include: {
       author: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-          activeStatus: true,
-          createdAt: true,
-          updateAt: true,
+        omit: {
+          password: true,
         },
       },
     },
@@ -37,9 +31,27 @@ export const createPostIntoDB = async (
 };
 
 // get all post
-export const getAllPostIntoDB = async () => {
-  const posts = await prisma.post.findMany();
-  return posts;
+export const getAllPostIntoDB = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+  const posts = await prisma.post.findMany({
+    skip: skip,
+    take: limit,
+
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const total = await prisma.post.count();
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage: Math.ceil(total / limit),
+    },
+    data: posts
+  };
 };
 
 // get my post
@@ -55,15 +67,14 @@ export const getMyPostIntoDB = async (authorId: string) => {
 
 // get post by id
 export const getPostByIdIntoDB = async (postId: string) => {
-
   const singlePost = await prisma.post.findUnique({
     where: {
       id: postId,
     },
   });
 
-  if(!singlePost){
-    throw new Error("Post Not Found!")
+  if (!singlePost) {
+    throw new Error("Post Not Found!");
   }
 
   return singlePost;

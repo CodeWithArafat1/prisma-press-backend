@@ -26,12 +26,25 @@ export const createPost = catchAsync(async (req: Request, res: Response) => {
 
 // get all posts
 export const getAllPosts = catchAsync(async (req: Request, res: Response) => {
-  const posts = await getAllPostIntoDB();
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 5
+  const posts = await getAllPostIntoDB(page, limit);
+  if(posts.data.length === 0){
+    sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: "posts not found!",
+    data: posts.data,
+
+  });
+  }
   sendResponse(res, {
     success: true,
     statusCode: status.OK,
-    message: "post retrieved successfully!",
-    data: posts,
+    message: "posts retrieved successfully!",
+    total: posts.meta.total,
+    data: posts.data,
+
   });
 });
 
